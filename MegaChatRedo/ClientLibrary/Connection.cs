@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -70,7 +71,7 @@ namespace ClientLibrary
             stream = null;
             client.Close();
             client = null;
-            Console.WriteLine("Connection aborted!");
+            Trace.WriteLine("Connection aborted!");
         }
     }
 }

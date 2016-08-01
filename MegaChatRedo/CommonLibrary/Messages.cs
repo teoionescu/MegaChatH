@@ -22,4 +22,13 @@ namespace CommonLibrary
             return $"{Source}->{Destination}:{Body}";
         }
     }
+
+    public class ListMessage : MessageBase
+    {
+        public string[] Online;
+        public override string ToString()
+        {
+            return "Online users: " + string.Join(", ", Online);
+        }
+    }
 }

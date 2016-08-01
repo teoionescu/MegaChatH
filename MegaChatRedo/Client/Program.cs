@@ -15,7 +15,7 @@ namespace Client
         static void Main(string[] args)
         {
             ClientConnection.MessageReceived += OnMessageReceived;
-            string name = null;
+            string name;
             do {
                 Console.WriteLine("Insert name:");
                 name = Console.ReadLine();
@@ -33,6 +33,14 @@ namespace Client
                     msg.Destination = words[0];
                     msg.Body = string.Join(" ", words.Where((s, i) => i > 0));
                     ClientConnection.SendMessage(msg);
+                }
+                else
+                {
+                    if (words[0] == "list")
+                    {
+                        ListMessage msg = new ListMessage();
+                        ClientConnection.SendMessage(msg);
+                    }
                 }
             }
         }

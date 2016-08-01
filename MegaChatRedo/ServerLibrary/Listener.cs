@@ -54,6 +54,12 @@ namespace ServerLibrary
                     Person.Map[dest].PersonalSender.SendMessage(commandDataAsChatMessage);
                 }
             }
+            if (commandData is ListMessage)
+            {
+                var commandDataAsListMessage = (ListMessage)commandData;
+                commandDataAsListMessage.Online = Person.Map.Keys.ToArray();
+                person.PersonalSender.SendMessage(commandDataAsListMessage);
+            }
         }
 
         public void Dispose()

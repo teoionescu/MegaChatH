@@ -15,33 +15,48 @@ namespace Client
         static void Main(string[] args)
         {
             ClientConnection.MessageReceived += OnMessageReceived;
-            string name;
-            do {
-                Console.WriteLine("Insert name:");
-                name = Console.ReadLine();
-            }
-            while (!ClientConnection.Connect("localhost", 8888, name));
-
             while (true)
             {
-                var body = Console.ReadLine();
-                var words = body.Split(' ');
-                if (words.Length > 1)
+                string result = null;
+                do
                 {
-                    ChatMessage msg = new ChatMessage();
-                    msg.Source = null;
-                    msg.Destination = words[0];
-                    msg.Body = string.Join(" ", words.Where((s, i) => i > 0));
-                    ClientConnection.SendMessage(msg);
+                    if(result != null) Console.WriteLine(result);
+                    Console.WriteLine("Insert name:");
+                    var name = Console.ReadLine();
+                    result = ClientConnection.Connect("192.168.0.5", 8888, name);
                 }
-                else
+                while (result != null);
+
+
+
+                var connected = true;
+                while (connected)
                 {
-                    if (words[0] == "list")
+                    var body = Console.ReadLine();
+                    var words = body.Split(' ');
+                    if (words.Length > 1)
                     {
-                        ListMessage msg = new ListMessage();
+                        ChatMessage msg = new ChatMessage();
+                        msg.Source = null;
+                        msg.Destination = words[0];
+                        msg.Body = string.Join(" ", words.Where((s, i) => i > 0));
                         ClientConnection.SendMessage(msg);
                     }
+                    else
+                    {
+                        if (words[0] == "list")
+                        {
+                            ListMessage msg = new ListMessage();
+                            ClientConnection.SendMessage(msg);
+                        }
+                        if (words[0] == "logout")
+                        {
+                            ClientConnection.Disconnect();
+                            connected = false;
+                        }
+                    }
                 }
+                Console.WriteLine("Disconnected");
             }
         }
 

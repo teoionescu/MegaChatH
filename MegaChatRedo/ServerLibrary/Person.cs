@@ -40,40 +40,57 @@ namespace ServerLibrary
             PersonalListener.Start();
         }
 
-        private bool NameChecker(string s)
+        private string NameChecker(string s)
         {
-            if (s == null) return false;
-            if (Map.ContainsKey(s)) return false;
-            if (s.Any(char.IsWhiteSpace)) return false;
-            return true;
+            if (s == null) return "Name not set";
+            if (s == "") return "Name not set";
+            if (Map.ContainsKey(s)) return "Name already in use";
+            if (s.Any(char.IsWhiteSpace)) return "Name should not contain whitespace characters";
+            return null;
         }
 
         private async Task GetName()
         {
             Name = null;
-            while (!NameChecker(Name))
+            while (NameChecker(Name)!=null)
             {
                 try
                 {
                     Name = await Reader.ReadLineAsync();
-                    Console.WriteLine(Name);
                 }
                 catch (Exception e)
                 {
-                    Dispose();
+                    DenyConnection(e.Message);
                     return;
                 }
-                if (NameChecker(Name) == false)
+                var check = NameChecker(Name);
+                if (check != null)
                 {
-                    Writer.WriteLine("Invalid name!");
-                    Dispose();
+                    Writer.WriteLine(check);
+                    Writer.Flush();
+                    DenyConnection("Invalid name " + (Name ?? "NAN"));
                     return;
                 }
             }
             Map.Add(Name, this);
             Console.WriteLine("User name set: " + "   " + Name);
+            Log.WriteLine("User name set: " + "   " + Name);
             Writer.WriteLine("AC");
             Writer.Flush();
+        }
+
+        public void DenyConnection(string err)
+        {
+            Name = null;
+            PersonalSender?.Dispose();
+            PersonalListener?.Dispose();
+            stream.Close();
+            stream.Dispose();
+            stream = null;
+            client.Close();
+            client = null;
+            Console.WriteLine("Connection denied!  Reason: " + err);
+            Log.WriteLine("Connection denied!  Reason: " + err);
         }
 
         public void Dispose()
@@ -86,7 +103,8 @@ namespace ServerLibrary
             stream = null;
             client.Close();
             client = null;
-            Console.WriteLine( "User disconnected!      name: " + (Name ?? "Invalid name") );
+            Console.WriteLine( "User disconnected!      name: " + (Name ?? "NAN") );
+            Log.WriteLine( "User disconnected!      name: " + (Name ?? "NAN") );
         }
     }
 }

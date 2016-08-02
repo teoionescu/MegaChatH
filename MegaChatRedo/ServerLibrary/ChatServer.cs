@@ -16,7 +16,7 @@ namespace ServerLibrary
 
         public ChatServer(int port)
         {
-            PortListener = new TcpListener(IPAddress.Parse("127.0.0.1"),port);
+            PortListener = new TcpListener(IPAddress.Parse(/*internal IP*/"192.168.0.5"),8888);
             PortListener.Start();
             Console.WriteLine("Starting to listen on port " + port + "...");
             Run();
@@ -29,6 +29,7 @@ namespace ServerLibrary
                 var client = await PortListener.AcceptTcpClientAsync();
                 new Person(client);
                 Console.WriteLine("New user connected!");
+                Log.WriteLine("New user connected!");
             }
         }
     }

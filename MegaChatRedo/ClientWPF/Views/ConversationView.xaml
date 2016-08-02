@@ -3,13 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ClientWPF.Views"
              xmlns:viewModels="clr-namespace:ClientWPF.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance Type=viewModels:ConversationViewModel}">
+             d:DataContext="{d:DesignInstance Type=viewModels:ConversationViewModel}"
+             xmlns:converters="clr-namespace:ClientWPF.ValueConverters">
+    
     <UserControl.Resources>
-        <AlternationConverter x:Key="AlternationConverter"/>
+        <converters:BoolToColorConverter x:Key="Booltocolor" />
+        <converters:BoolToAlignmentConverter x:Key="Booltoalign" />
     </UserControl.Resources>
 
     <DockPanel>
@@ -25,21 +27,24 @@
                     <KeyBinding Key="Enter" Command="{Binding SendMessage}"/>
                 </TextBox.InputBindings>
             </TextBox>
-            <Button Content="Send" Command="{Binding SendMessage}" Grid.Column="2"></Button>
+            <Button Content="Send" Command="{Binding SendMessage}" Grid.Column="2" />
         </Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Name="_scrollViewer" VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding Messages}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock TextWrapping="Wrap">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0}->{1}: {2}">
-                                    <Binding Path="From"></Binding>
-                                    <Binding Path="To"></Binding>
-                                    <Binding Path="Body"></Binding>
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
+                        <Border Margin="5" Padding="5" BorderThickness="1" BorderBrush="{Binding IsInbound,Converter={StaticResource Booltocolor}}" 
+                                Background="AntiqueWhite" CornerRadius="10" HorizontalAlignment="{Binding IsInbound,Converter={StaticResource Booltoalign}}">
+                            <TextBlock TextWrapping="Wrap" Text="{Binding Body}">
+                                <!--<TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}->{1}: {2}">
+                                        <Binding Path="From"></Binding>
+                                        <Binding Path="To"></Binding>
+                                        <Binding Path="Body"></Binding>
+                                    </MultiBinding>
+                                </TextBlock.Text>-->
+                            </TextBlock>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -47,3 +52,4 @@
     </DockPanel>
     
 </UserControl>
+

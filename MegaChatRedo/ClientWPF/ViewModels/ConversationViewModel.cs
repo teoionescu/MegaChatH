@@ -12,31 +12,37 @@ namespace ClientWPF.ViewModels
 {
     public class ConversationViewModel : BaseModel
     {
-        public IChatClient ChatClient;
         public ICommand SendMessage { get; set; }
         public string Name { get; set; }
         public string OtherUser { get; set; }
+        private bool _online = true;
+        public bool Online
+        {
+            get { return _online; }
+            set { _online = value; OnPropertyChanged(); }
+        }
         public ObservableCollection<MessageModel> Messages { get; } = new ObservableCollection<MessageModel>();
-        private string _currentMessageBody;
+        private string currentMessageBody;
+        
+
         public string CurrentMessageBody
         {
-            get { return _currentMessageBody; }
-            set { _currentMessageBody = value; OnPropertyChanged(); }
+            get { return currentMessageBody; }
+            set { currentMessageBody = value; OnPropertyChanged(); }
         }
 
 
-        public ConversationViewModel(IChatClient chatClient, string otherUser, string name)
+        public ConversationViewModel(string otherUser, string name)
         {
-            ChatClient = chatClient;
             Name = name;
             OtherUser = otherUser;
-            ChatClient.MessageReceived += OnMessageReceived;
+            DIContainer.GetInstance<IChatClient>().MessageReceived += OnMessageReceived;
             SendMessage = new RelayCommand(OnSendMessage);
         }
 
         public void OnSendMessage()
         {
-            ChatClient.SendMessage(new ChatMessage
+            DIContainer.GetInstance<IChatClient>().SendMessage(new ChatMessage
             {
                 Source = Name,
                 Destination = OtherUser,

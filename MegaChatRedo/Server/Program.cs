@@ -12,13 +12,13 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            /*var srv=new ChatServer(8888);
+            var srv=new ChatServer(8888);
             Task.Run(() => srv.Run())
-                .ContinueWith(t => Console.WriteLine("Error " + t.Exception), TaskContinuationOptions.OnlyOnFaulted);*/
+                .ContinueWith(t => Console.WriteLine("Error " + t.Exception), TaskContinuationOptions.OnlyOnFaulted);
 
-            Type s = typeof(ChatServer);
+            /*Type s = typeof(ChatServer);
             Task.Run(() => (ChatServer)Activator.CreateInstance(s, args: Settings.Default.ListenPort))
-            .ContinueWith(t => Console.WriteLine("Error " + t.Exception), TaskContinuationOptions.OnlyOnFaulted);
+            .ContinueWith(t => Console.WriteLine("Error " + t.Exception), TaskContinuationOptions.OnlyOnFaulted);*/
 
             Console.WriteLine("Press any key to stop server...");
             Console.ReadKey();

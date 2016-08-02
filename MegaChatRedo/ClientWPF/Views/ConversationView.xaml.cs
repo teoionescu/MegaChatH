@@ -13,6 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ClientLibrary;
+using ClientWPF.ViewModels;
+using CommonLibrary;
 
 namespace ClientWPF.Views
 {
@@ -24,6 +27,15 @@ namespace ClientWPF.Views
         public ConversationView()
         {
             InitializeComponent();
+            DIContainer.GetInstance<IChatClient>().MessageReceived += OnMessageReceived;
+        }
+
+        private void OnMessageReceived(MessageBase obj)
+        {
+            if (obj is ChatMessage)
+            {
+                UiInvoker.Run(() => _scrollViewer.ScrollToEnd());
+            }
         }
     }
 }

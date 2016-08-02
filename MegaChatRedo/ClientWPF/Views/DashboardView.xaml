@@ -7,19 +7,29 @@
              xmlns:viewModels="clr-namespace:ClientWPF.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance Type=viewModels:DashboardViewModel}">
-    <DockPanel>
+             d:DataContext="{d:DesignInstance Type=viewModels:DashboardViewModel}"
+             xmlns:converters="clr-namespace:ClientWPF.ValueConverters">
+
+    <UserControl.Resources>
+        <converters:BoolToColorConverterOnline x:Key="Booltocoloronline" />
+    </UserControl.Resources>
+
+    <DockPanel Margin="10">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <TextBlock Text="Welcome!"></TextBlock>
         </StackPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <TextBlock Text="Your nickname:   "></TextBlock>
-            <TextBlock Text="{Binding Name}" Width="200"></TextBlock>
+            <TextBlock Margin="20,5,40,5" Text="{Binding Name}" Width="auto" FontWeight="Bold"></TextBlock>
+            <Button Margin="3" Content="Log Out" Command="{Binding DoLogout}"/>
         </StackPanel>
         <TabControl ItemsSource="{Binding Conversations}" SelectedItem="{Binding CurrentConversation}" TabStripPlacement="Left">
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding OtherUser}" FontWeight="Bold" FontSize="18"/>
+                    <StackPanel Orientation="Vertical" Margin="0,0,0,5" MinWidth="50">
+                        <TextBlock Text="{Binding OtherUser}" FontWeight="Bold" FontSize="18"/>
+                        <Ellipse Fill="{Binding Online,Converter={StaticResource Booltocoloronline}}" Height="10" Width="10"/>
+                    </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
             <TabControl.ContentTemplate>

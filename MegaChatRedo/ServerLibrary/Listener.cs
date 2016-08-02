@@ -51,6 +51,7 @@ namespace ServerLibrary
                 if (Person.Map.ContainsKey(dest))
                 {
                     commandDataAsChatMessage.Source = person.Name;
+                    Log.WriteLine(commandData.ToString());
                     Person.Map[dest].PersonalSender.SendMessage(commandDataAsChatMessage);
                 }
             }

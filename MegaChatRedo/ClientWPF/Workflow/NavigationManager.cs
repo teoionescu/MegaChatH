@@ -13,27 +13,46 @@ namespace ClientWPF.Workflow
     public interface INavigationManager
     {
         void Start();
-        void ShowDashboard(LoginViewModel lvm);
+        void ShowDashboard();
+        void ReturnToLogin();
     }
 
     class NavigationManager : INavigationManager
     {
         private MainWindow window;
+        private LoginView loginview;
+        private LoginViewModel loginviewmodel;
+        private DashboardView dashboardview;
+        private DashboardViewModel dashboardviewmodel;
 
         public void Start()
         {
             window = (MainWindow)Application.Current.MainWindow;
-            var view = new LoginView();
-            view.DataContext = new LoginViewModel();
-            window.ContentControl.Content = view;
+            loginview = new LoginView();
+            loginviewmodel = new LoginViewModel();
+            loginview.DataContext = loginviewmodel;
+            window.ContentControl.Content = loginview;
         }
 
-        public void ShowDashboard(LoginViewModel lvm)
+        public void ShowDashboard()
         {
-            var view = new DashboardView();
-            var vm = new DashboardViewModel {Name = lvm.Name};
-            view.DataContext = vm;
-            window.ContentControl.Content = view;
+            if (dashboardview == null)
+            {
+                dashboardview = new DashboardView();
+                dashboardviewmodel = new DashboardViewModel {Name = loginviewmodel.Name};
+                dashboardview.DataContext = dashboardviewmodel;
+            }
+            else
+            {
+                dashboardviewmodel.Name = loginviewmodel.Name;
+                dashboardviewmodel.OnNavigation();
+            }
+            window.ContentControl.Content = dashboardview;
+        }
+
+        public void ReturnToLogin()
+        {
+            window.ContentControl.Content = loginview;
         }
     }
 }

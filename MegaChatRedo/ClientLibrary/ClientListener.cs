@@ -39,7 +39,14 @@ namespace ClientLibrary
         public void Dispose()
         {
             isactive = false;
-            internalProcess?.Wait();
+            try
+            {
+                internalProcess?.Wait();
+            }
+            catch
+            {
+                // ignored
+            }
         }
     }
 }

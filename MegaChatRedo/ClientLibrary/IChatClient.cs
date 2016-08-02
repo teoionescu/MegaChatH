@@ -9,8 +9,9 @@ namespace ClientLibrary
 {
     public interface IChatClient
     {
-        bool Connect(string ip, int portNo, string myName);
+        string Connect(string ip, int portNo, string myName);
         void SendMessage(MessageBase message);
         event Action<MessageBase> MessageReceived;
+        void Disconnect();
     }
 }
